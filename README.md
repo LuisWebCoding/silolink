@@ -18,8 +18,8 @@ npm run dev
 ### Backend
 Vá na pasta resources e logo em seguida entre no arquivo application.properties
 nas linhas 6 e 7:
-spring.datasource.username=root
-spring.datasource.password=230307
+spring.datasource.username=${DB_USERNAME}
+spring.datasource.password=${DB_PASSWORD}
 
 modifique o password e o username para o que está sendo utilizando na máquina local.
 
