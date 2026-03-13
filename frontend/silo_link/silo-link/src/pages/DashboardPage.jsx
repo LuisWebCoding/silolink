@@ -11,38 +11,33 @@ function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const API_URL = "http://localhost:8081/api/locais";
 
-  // Função de mapeamento do Backend (expandido) para o Frontend (simplificado)
+
   const mapBackendToFrontend = (backendData) => {
     return backendData.map(silo => {
-      // Campos do Lote (assumindo que usamos o primeiro lote)
       const lote = silo.lotes && silo.lotes.length > 0 ? silo.lotes[0] : {};
-      // Campos do Sensor (assumindo que usamos o primeiro sensor)
       const sensor = silo.sensores && silo.sensores.length > 0 ? silo.sensores[0] : {};
 
       return {
-        // Campos do Frontend
         id: silo.idLocal,
-        armazem: silo.nomeLocal, // Local de Armazenamento
-        lote: lote.idLote || 'N/A', // ID do Lote (para referência)
-        data: lote.dataEntrada ? new Date(lote.dataEntrada).toLocaleDateString('pt-BR') : 'N/A', // Data de Armazenamento
-        semente: lote.tipoSemente || 'N/A', // Tipo de Semente
-        quantidade: lote.quantidade ? `${lote.quantidade} Ton` : 'N/A', // Quantidade de Sementes
-        status: sensor.status || 'N/A', // Status do Silo
+        armazem: silo.nomeLocal,
+        lote: lote.idLote || 'N/A', 
+        data: lote.dataEntrada ? new Date(lote.dataEntrada).toLocaleDateString('pt-BR') : 'N/A', 
+        semente: lote.tipoSemente || 'N/A', 
+        quantidade: lote.quantidade ? `${lote.quantidade} Ton` : 'N/A', 
+        status: sensor.status || 'N/A', 
         
-        // Campos do Backend (para facilitar a edição/atualização)
         backendData: {
           idLocal: silo.idLocal,
           nomeLocal: silo.nomeLocal,
           tipoLocal: silo.tipoLocal,
           lotes: silo.lotes || [],
           sensores: silo.sensores || [],
-          // ... outros dados necessários para o PUT
         }
       };
     });
   };
 
-  // Função para buscar os dados
+
   const fetchSilos = async () => {
     setLoading(true);
     try {
@@ -58,27 +53,24 @@ function DashboardPage() {
       setLoading(false);
     }
   };
-
-  // Carregar dados ao montar o componente
+  
   useEffect(() => {
     fetchSilos();
   }, []);
   
-  // 1. NOVO ESTADO: Guarda o objeto do silo que estamos editando (ou null)
+  
   const [siloParaEditar, setSiloParaEditar] = useState(null);
 
   // --- FUNÇÕES ---
 
-  // Agora, ao abrir para CRIAR, garantimos que não há edição pendente
   const openModalToCreate = () => {
     setSiloParaEditar(null);
     setIsModalOpen(true);
   };
 
-  // Nova função chamada pelo botão da Tabela
   const openModalToEdit = (silo) => {
-    setSiloParaEditar(silo); // Guarda os dados do silo clicado
-    setIsModalOpen(true);    // Abre o modal
+    setSiloParaEditar(silo);
+    setIsModalOpen(true);  
   };
 
   const closeModal = () => {
@@ -86,9 +78,9 @@ function DashboardPage() {
     setSiloParaEditar(null);
   };
 
-  // Função INTELIGENTE de salvar (Cria ou Atualiza)
+  
   const handleSaveSilo = async (dadosDoSilo) => {
-    // Mapeamento do Frontend para o Backend
+    
     const backendData = {
       nomeLocal: dadosDoSilo.armazem,
       tipoLocal: null, 
@@ -120,7 +112,6 @@ function DashboardPage() {
         throw new Error(`Falha ao salvar o silo: ${response.statusText}`);
       }
 
-      // Após salvar, recarrega a lista
       fetchSilos();
       closeModal();
     } catch (error) {
@@ -141,7 +132,7 @@ function DashboardPage() {
           throw new Error('Falha ao deletar o silo');
         }
 
-        // Após deletar, recarrega a lista
+        
         fetchSilos();
       } catch (error) {
         console.error("Erro ao deletar o silo:", error);
@@ -170,7 +161,6 @@ function DashboardPage() {
           {loading ? (
             <p>Carregando silos...</p>
           ) : (
-            /* Passamos a função de editar para a tabela */
             <SilosTable 
               data={silos} 
               onDelete={handleDeleteSilo} 
