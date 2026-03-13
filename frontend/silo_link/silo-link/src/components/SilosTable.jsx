@@ -1,6 +1,5 @@
 import React from 'react';
 
-// Recebemos onEdit aqui
 const TableRow = ({ silo, onDelete, onEdit }) => (
   <tr>
     <td>{silo.id}</td>
@@ -60,7 +59,7 @@ function SilosTable({ data, onDelete, onEdit }) {
                 key={silo.id} 
                 silo={silo} 
                 onDelete={onDelete}
-                onEdit={onEdit} // Repassa a função
+                onEdit={onEdit} 
               />
             ))}
           </tbody>
