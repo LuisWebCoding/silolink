@@ -1,4 +1,3 @@
-// src/components/AddSiloModal.jsx
 import React, { useState, useEffect } from 'react';
 
 function AddSiloModal({ isOpen, onClose, onSave, siloInicial }) {
@@ -9,19 +8,17 @@ function AddSiloModal({ isOpen, onClose, onSave, siloInicial }) {
   const [tipoSensor, setTipoSensor] = useState('');
   const [statusSensor, setStatusSensor] = useState('');
 
-  // EFFECT: Monitora quando o modal abre ou quando o 'siloInicial' muda
+  
   useEffect(() => {
     if (isOpen) {
       if (siloInicial) {
-        // MODO EDIÇÃO: Preenche os campos com os dados existentes
         setArmazem(siloInicial.armazem);
-        // O campo 'data' precisa ser formatado para o input type="date" (YYYY-MM-DD)
         const dataFormatada = siloInicial.data.split('/').reverse().join('-');
         setData(dataFormatada);
         setSemente(siloInicial.semente);
         setQuantidade(siloInicial.quantidade.replace(' Ton', '').replace(',', '.')); 
         
-        // Preencher dados de sensor se existirem
+      
         if (siloInicial.backendData && siloInicial.backendData.sensores && siloInicial.backendData.sensores.length > 0) {
           const sensor = siloInicial.backendData.sensores[0];
           setTipoSensor(sensor.tipoSensor || '');
@@ -31,7 +28,6 @@ function AddSiloModal({ isOpen, onClose, onSave, siloInicial }) {
           setStatusSensor('');
         }
       } else {
-        // MODO CRIAÇÃO: Limpa os campos
         setArmazem('');
         setData('');
         setSemente('');
@@ -47,18 +43,18 @@ function AddSiloModal({ isOpen, onClose, onSave, siloInicial }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     
-    // Construir objeto de Lote
+  
     const lotes = [];
     if (data && semente && quantidade) {
       lotes.push({
         tipoSemente: semente,
         quantidade: parseFloat(quantidade),
-        dataEntrada: new Date(data).toISOString(), // Converter para ISO string
+        dataEntrada: new Date(data).toISOString(), 
         dataSaida: null
       });
     }
     
-    // Construir objeto de Sensor
+  
     const sensores = [];
     if (tipoSensor && statusSensor) {
       sensores.push({
