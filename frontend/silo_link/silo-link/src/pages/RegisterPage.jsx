@@ -6,38 +6,37 @@ import logo from '../assets/logo_silo_link.png'; // Importando o logo
 function RegisterPage() {
   const navigate = useNavigate();
 
-  // Estado para controlar todos os campos do formulário
+
   const [formData, setFormData] = useState({
     nome: '',
     email: '',
-    senha: '', // Alterado de 'password' para 'senha' para mapear com o DTO do backend
+    senha: '', 
     cargo: '',
-    nivelAcesso: 'user' // Valor padrão para novos cadastros
+    nivelAcesso: 'user' 
   });
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-  // Função genérica para atualizar o estado quando o usuário digita
+  
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prevState => ({
       ...prevState,
       [name]: value
     }));
-    // Limpa mensagens ao começar a digitar
     if (error) setError('');
     if (success) setSuccess('');
   };
 
-  // Função chamada ao enviar o formulário
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setSuccess('');
     
-    // Validação básica
+
     if (!formData.nome || !formData.email || !formData.senha || !formData.cargo) {
       setError("Por favor, preencha todos os campos obrigatórios.");
       return;
@@ -46,39 +45,31 @@ function RegisterPage() {
     setLoading(true);
 
     try {
-      // O endpoint de criação de usuário é POST /api/usuarios
       const response = await fetch('http://localhost:8081/api/usuarios', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        // O body deve ser um UsuarioDTO
         body: JSON.stringify({
           nome: formData.nome,
           email: formData.email,
           senha: formData.senha,
           cargo: formData.cargo,
           nivelAcesso: formData.nivelAcesso,
-          // Não estamos incluindo EmpresaDTO no cadastro simples
         } )
       });
 
       if (response.ok) {
-        // Cadastro bem-sucedido
         setSuccess('Cadastro realizado com sucesso! Você será redirecionado para o login.');
-        // Redireciona para a tela de login após 3 segundos
         setTimeout(() => {
           navigate('/login');
         }, 3000);
       } else {
-        // Erro no backend (ex: email já cadastrado)
-        // Tentativa de ler a mensagem de erro do corpo da resposta
         let errorMessage = 'Erro ao realizar o cadastro. Tente novamente.';
         try {
             const errorData = await response.json();
             errorMessage = errorData.message || errorMessage;
         } catch (e) {
-            // Se não for JSON, usa a mensagem padrão
         }
         setError(errorMessage);
       }
