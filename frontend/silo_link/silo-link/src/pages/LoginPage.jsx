@@ -6,7 +6,7 @@ import logo from '../assets/logo_silo_link.png'; // Importando o logo
 function LoginPage() {
   const navigate = useNavigate();
 
-  // Estado único para controlar todos os campos do formulário
+ 
   const [formData, setFormData] = useState({
     nome: '',
     email: '',
@@ -17,23 +17,22 @@ function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // Função genérica para atualizar o estado quando o usuário digita
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prevState => ({
       ...prevState,
       [name]: value
     }));
-    // Limpa o erro quando o usuário começa a digitar
     if (error) setError('');
   };
 
-  // Função chamada ao enviar o formulário
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     
-    // Validação básica dos campos obrigatórios
+
     if (!formData.email || !formData.password) {
       setError("Por favor, preencha email e senha.");
       return;
@@ -42,7 +41,6 @@ function LoginPage() {
     setLoading(true);
 
     try {
-      // Chamada ao backend
       const response = await fetch('http://localhost:8081/api/auth/login', {
         method: 'POST',
         headers: {
@@ -57,24 +55,19 @@ function LoginPage() {
       const data = await response.json();
 
       if (response.ok && data.sucesso) {
-        // Login bem-sucedido
         alert(`Bem-vindo(a)! ${data.mensagem}`);
         
-        // ✅ CORREÇÃO: Armazenar o nome do usuário no localStorage
-        // O nome pode vir do backend ou do campo preenchido no formulário
         const nomeUsuario = data.nome || formData.nome || formData.email;
         localStorage.setItem('nomeUsuario', nomeUsuario);
+
         
-        // Opcionalmente, armazenar outros dados
         localStorage.setItem('emailUsuario', formData.email);
         if (formData.cargo) {
           localStorage.setItem('cargoUsuario', formData.cargo);
         }
-        
-        // Navega para a rota do dashboard
+
         navigate('/dashboard');
       } else {
-        // Erro de autenticação
         setError(data.mensagem || 'Erro ao fazer login. Verifique suas credenciais.');
       }
     } catch (err) {
